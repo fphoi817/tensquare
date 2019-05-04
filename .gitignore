@@ -1,5 +1,4 @@
-/loghome
+/*/*.log
 /.idea
-/target
-/.yml
-/.log
+/*/target
+/*/src/main/resources/*.yml
