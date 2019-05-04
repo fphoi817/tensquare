@@ -3,11 +3,18 @@ package com.tensquare.base.service;
 import com.tensquare.base.dao.LabelDao;
 import com.tensquare.base.pojo.Label;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import tools.IdWorker;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -49,4 +56,29 @@ public class LabelService {
         LABELDAO.deleteById(id);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public List<Label> findSearch(Label label) {
+        return LABELDAO.findAll(new Specification<Label>() {
+            @Override
+            public Predicate toPredicate(Root<Label> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                // new一个list 集合, 来存放所有的条件
+                List<Predicate> list = new ArrayList<>();
+                if(StringUtils.isEmpty(label.getLabelname())){
+                    Predicate labelname = criteriaBuilder.like(root.get("labelname").as(String.class), "%" + label.getLabelname() + "%");// where labelname like "%小明%"
+                    list.add(labelname);
+                }
+
+                if(StringUtils.isEmpty(label.getState())){
+                    criteriaBuilder.equal(root.get("state").as(String.class), label.getState());  // where state = ""
+                }
+
+                // new 一个数组作为最终返回值的条件
+                Predicate[] predicates = new Predicate[list.size()];
+                // 把list直接转成数组  list.toArray(predicates);  和 predicates = list.toArray(); 是一样的
+                list.toArray(predicates);
+                return criteriaBuilder.and(predicates);  // where labelname like "%小明%" and state = "1"
+
+            }
+        });
+    }
 }

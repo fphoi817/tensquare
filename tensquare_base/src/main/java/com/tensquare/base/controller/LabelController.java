@@ -6,15 +6,17 @@ import entity.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/label")
-public class BaseController {
+public class LabelController {
 
     private final LabelService LABELSERVICE;
 
     @Autowired
-    public BaseController(LabelService labelService) {
+    public LabelController(LabelService labelService) {
         this.LABELSERVICE = labelService;
     }
 
@@ -50,4 +52,12 @@ public class BaseController {
         LABELSERVICE.deleById(labelId);
         return ResponseResult.SUSSCESS();
     }
+
+
+    @PostMapping("/search")
+    public ResponseResult findSearch(@RequestBody Label label){
+        List<Label> list = LABELSERVICE.findSearch(label);
+        return ResponseResult.SUSSCESS(list);
+    }
+
 }
