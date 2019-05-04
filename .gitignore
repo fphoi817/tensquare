@@ -1,4 +1,5 @@
-/*/*.log
 /.idea
-/*/target
-/*/src/main/resources/*.yml
+target
+*.log
+*.yml
+test
