@@ -63,12 +63,12 @@ public class LabelService {
             public Predicate toPredicate(Root<Label> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 // new一个list 集合, 来存放所有的条件
                 List<Predicate> list = new ArrayList<>();
-                if(StringUtils.isEmpty(label.getLabelname())){
+                if(!StringUtils.isEmpty(label.getLabelname())){
                     Predicate labelname = criteriaBuilder.like(root.get("labelname").as(String.class), "%" + label.getLabelname() + "%");// where labelname like "%小明%"
                     list.add(labelname);
                 }
 
-                if(StringUtils.isEmpty(label.getState())){
+                if(!StringUtils.isEmpty(label.getState())){
                     criteriaBuilder.equal(root.get("state").as(String.class), label.getState());  // where state = ""
                 }
 
