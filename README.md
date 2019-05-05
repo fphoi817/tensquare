@@ -39,4 +39,9 @@
     4. criteriaBuilder 用来封装条件对象的(类似于mybatis中 example) 如果直接返回 null 表示不需要任何条件
     5. 因为查询的条件不确定, 可能是多个或是一个, 所以 criteriaBuilder.and(必须是初始化长度的数组), 但是条件的个数不知道, 数组的长度无法确认, 所以需要用集合来存放
     6. list.toArray(predicates); 和 predicates = list.toArray(); 是一样的 , 都将集合的值转成了数组后 赋值给了参数数组
+ 
+ + JPA 带条件的分页查询
+    1. 带条件的分页查询和只带条件的查询差不多, 主要区别于, 分页的findAll() 方法需要两个参数, 第二个参数是Pageable 分页对象的方法 PageRequest.of(page-1, size);
+    2. 主要JPA的分页查询中 传入的page 页 必须是从零开始的, 所以前端传过来的参数必须减1, 返回的对象不推荐是Page, Page对象封装了很多对象, 我们只需要通过page.getTotalElements(), page.getContent() 取出总记录和每页显示条数
     
+       
