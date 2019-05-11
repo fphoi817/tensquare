@@ -24,20 +24,20 @@ public class LabelController {
 
     @GetMapping("/findAll")
     public ResponseResult findAll() {
-        return ResponseResult.SUSSCESS(LABELSERVICE.findAll());
+        return ResponseResult.SUCCESS(LABELSERVICE.findAll());
     }
 
 
     @GetMapping("/findById/{labelId}")
     public ResponseResult findById(@PathVariable String labelId) {
-        return ResponseResult.SUSSCESS(LABELSERVICE.findById(labelId));
+        return ResponseResult.SUCCESS(LABELSERVICE.findById(labelId));
     }
 
 
     @PostMapping("/save")
     public ResponseResult save(@RequestBody Label label) {
         LABELSERVICE.save(label);
-        return ResponseResult.SUSSCESS();
+        return ResponseResult.SUCCESS();
     }
 
 
@@ -45,27 +45,27 @@ public class LabelController {
     public ResponseResult update(@PathVariable String labelId, @RequestBody Label label) {
         label.setId(labelId);
         LABELSERVICE.update(label);
-        return ResponseResult.SUSSCESS();
+        return ResponseResult.SUCCESS();
     }
 
 
     @DeleteMapping("/deleById/{labelId}")
     public ResponseResult deleById(@PathVariable String labelId) {
         LABELSERVICE.deleById(labelId);
-        return ResponseResult.SUSSCESS();
+        return ResponseResult.SUCCESS();
     }
 
 
     @PostMapping("/search")
     public ResponseResult findSearch(@RequestBody Label label){
         List<Label> list = LABELSERVICE.findSearch(label);
-        return ResponseResult.SUSSCESS(list);
+        return ResponseResult.SUCCESS(list);
     }
 
     @PostMapping("/search/{page}/{size}")
     public ResponseResult pageQuery(@RequestBody Label label, @PathVariable int page, @PathVariable int size){
         Page<Label> pageData = LABELSERVICE.pageQuery(label, page, size);
-        return ResponseResult.SUSSCESS(new PageResult<Label>(pageData.getTotalElements(), pageData.getContent()));
+        return ResponseResult.SUCCESS(new PageResult<Label>(pageData.getTotalElements(), pageData.getContent()));
     }
 
 }

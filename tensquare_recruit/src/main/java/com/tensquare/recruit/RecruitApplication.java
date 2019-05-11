@@ -1,20 +1,19 @@
-package com.tensquare.base;
+package com.tensquare.recruit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import tools.IdWorker;
 
 @SpringBootApplication
-@EnableCaching
-public class BaseApplication {
+public class RecruitApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BaseApplication.class, args);
+        SpringApplication.run(RecruitApplication.class, args);
     }
 
+
     @Bean
-    public IdWorker idWorker() {
+    public IdWorker idWorker(){
         return new IdWorker();
     }
 }

@@ -11,6 +11,7 @@
     <modules>
         <module>tensquare_common</module>
         <module>tensquare_base</module>
+        <module>tensquare_recruit</module>
     </modules>
 
     <!-- Inherit defaults from Spring Boot -->
@@ -36,13 +37,4 @@
 
     </dependencies>
 
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 </project>

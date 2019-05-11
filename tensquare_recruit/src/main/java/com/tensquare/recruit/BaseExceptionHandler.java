@@ -1,4 +1,4 @@
-package com.tensquare.base;
+package com.tensquare.recruit;
 
 import entity.ResponseResult;
 import org.slf4j.Logger;

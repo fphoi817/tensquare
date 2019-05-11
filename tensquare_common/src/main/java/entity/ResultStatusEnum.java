@@ -1,34 +1,35 @@
 package entity;
 
+import java.util.Date;
+
 public enum ResultStatusEnum {
 
-    SUCCESS(true, 20000,"操作成功!"),
-    FAILED(false, 40000,"操作失败!"),
-    UNAUTHORIZED(false, 40100,"未认证（需要登录）!"),
-    NOT_FOUND(false, 40400,"无法找到资源!"),
-    INTERNAL_SERVER_ERROR(false, 50000,"抱歉, 系统繁忙, 请稍后再试!"),
-    OVERDUE(false, 50100, "Token过期");
+    SUCCESS(new Date(),200,"操作成功!"),
+    FAILED(new Date(),400,"操作失败!"),
+    UNAUTHORIZED(new Date(),401,"未认证（需要登录）!"),
+    NOT_FOUND(new Date(),404,"无法找到资源!"),
+    INTERNAL_SERVER_ERROR(new Date(),500,"抱歉, 系统繁忙, 请稍后再试!"),
+    OVERDUE(new Date(),501, "Token过期");
 
-    private boolean status;
-    private Integer code;
-    private String msg;
+    private Integer status;
+    private String message;
+    private Date date;
 
-    ResultStatusEnum(boolean status, Integer code, String msg) {
+    ResultStatusEnum(Date date, Integer status, String message) {
         this.status = status;
-        this.code = code;
-        this.msg = msg;
+        this.message = message;
+        this.date = date;
     }
 
-    public boolean isStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public Integer getCode() {
-        return code;
+    public String getMessage() {
+        return message;
     }
 
-    public String getMsg() {
-        return msg;
+    public Date getDate() {
+        return date;
     }
-
 }

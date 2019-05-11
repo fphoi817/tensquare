@@ -3,6 +3,9 @@ package com.tensquare.base.service;
 import com.tensquare.base.dao.LabelDao;
 import com.tensquare.base.pojo.Label;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,32 +36,56 @@ public class LabelService {
         this.IDWORKER = idWorker;
     }
 
+    /**
+     * 查询全部标签
+     */
+    @Cacheable(value = "label")
     @Transactional(propagation = Propagation.SUPPORTS)
     public List<Label> findAll(){
         return LABELDAO.findAll();
     }
 
+    /**
+     * 根据ID 查询标签
+     */
+    @Cacheable(value = "label", key = "#id")
     @Transactional(propagation = Propagation.SUPPORTS)
     public Label findById(String id){
         return LABELDAO.findById(id).get();
     }
 
+    /**
+     * 增加标签
+     */
+    @CachePut(value = "label", key = "#label.id")
     @Transactional(propagation = Propagation.REQUIRED)
     public void save(Label label) {
         label.setId(IDWORKER.nextId()+"");
         LABELDAO.save(label);
     }
 
+    /**
+     * 修改标签
+     */
+    @CachePut(value = "label", key = "#label.id")
     @Transactional(propagation = Propagation.REQUIRED)
     public void update(Label label){
         LABELDAO.save(label);
     }
 
+    /**
+     * 删除标签
+     */
+    @CacheEvict(value = "label", key = "#id")
     @Transactional(propagation = Propagation.REQUIRED)
     public void deleById(String id){
         LABELDAO.deleteById(id);
     }
 
+
+    /**
+     * 根据条件查询
+     */
     @Transactional(propagation = Propagation.SUPPORTS)
     public List<Label> findSearch(Label label) {
         return LABELDAO.findAll(new Specification<Label>() {
@@ -86,6 +113,10 @@ public class LabelService {
         });
     }
 
+
+    /**
+     * 构建分页查条件
+     */
     @Transactional(propagation = Propagation.SUPPORTS)
     public Page<Label> pageQuery(Label label, int page, int size) {
         // 1. 封装了分页对象
@@ -110,7 +141,6 @@ public class LabelService {
                 // 4. 把list直接转成数组  list.toArray(predicates);  和 predicates = list.toArray(); 是一样的
                 list.toArray(predicates);
                 return criteriaBuilder.and(predicates);  // where labelname like "%小明%" and state = "1"
-
             }
         }, pageable);
     }

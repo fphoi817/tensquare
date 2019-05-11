@@ -44,4 +44,11 @@
     1. 带条件的分页查询和只带条件的查询差不多, 主要区别于, 分页的findAll() 方法需要两个参数, 第二个参数是Pageable 分页对象的方法 PageRequest.of(page-1, size);
     2. 主要JPA的分页查询中 传入的page 页 必须是从零开始的, 所以前端传过来的参数必须减1, 返回的对象不推荐是Page, Page对象封装了很多对象, 我们只需要通过page.getTotalElements(), page.getContent() 取出总记录和每页显示条数
     
-       
+    
+### 添加 tensquare_recruit 模块
+
+ + 配置recruit 模块的一些参数, 连接数据库名称, POM文件, 工程名, 端口号, 运行主类
+ + JPA 命名规则生成SQL语句
+ 
+ 
+         
