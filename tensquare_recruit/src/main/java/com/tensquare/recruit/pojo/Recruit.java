@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "tb_recruit")
-public class Recruit {
+public class Recruit implements Serializable {
     @Id
     private String id;          //
     private String jobname;     // 招聘职位

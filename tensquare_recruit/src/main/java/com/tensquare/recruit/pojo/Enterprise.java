@@ -3,10 +3,11 @@ package com.tensquare.recruit.pojo;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "tb_enterprise")
-public class Enterprise {
+public class Enterprise implements Serializable {
 
     @Id
     private String id;

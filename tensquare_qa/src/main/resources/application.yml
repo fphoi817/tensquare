@@ -3,7 +3,7 @@ server:
   # ===================================================================
   # 端口号
   # ===================================================================
-  port: 9001
+  port: 9003
   # ===================================================================
   # springboot内置Tomcat优化配置
   # ===================================================================
@@ -21,20 +21,18 @@ spring:
   # 项目名称
   # ===================================================================
   application:
-    name: tensquare-base
-
+    name: tensquare-qa
   # ===================================================================
   # springboot中配置springMvc异常抛出
   # ===================================================================
   mvc:
     throw-exception-if-no-handler-found: true
-
   # ===================================================================
   # MySQL数据库连接配置
   # ===================================================================
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.179.131:3306/tensquare_base?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://192.168.179.131:3306/tensquare_qa?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: 123456
 
