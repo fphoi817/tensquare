@@ -1,5 +1,5 @@
 
-### init projecit
+# 十次方项目笔记
 
 ### 添加 tensquare_common 模块
  + 添加数据返回包装类
@@ -50,5 +50,29 @@
  + 配置recruit 模块的一些参数, 连接数据库名称, POM文件, 工程名, 端口号, 运行主类
  + JPA 命名规则生成SQL语句
  
+### 添加 tensquare_qa 模块 
  
-         
+ + 多对多 中间表 关联查询 在持久层DAO的方法上 加注解@Query()  里面的字符串是JQL  如果要用SQL语句 需要 加上nativeQuery = ture
+ + JQL 的语法 是所有关于SQL中表名 全部换成对象名
+ 
+### 添加 tensquare_article 模块
+
+ + 在JPA 的持久层中除了查询 其他操作都应该加上 注解 @Modifying
+ ```
+    @Modifying
+    @Query("UPDATE Article art SET art.state = '1' WHERE art.id = ?1")
+    
+    注意: UPDATE Article SET Article.state = '1' WHERE Article.id = ?1 这样写会报空指针异常 
+    update Article set state='1' where id=?1 正确的也可以写成这样
+    自己分析 应该是 Article SET 后面 再次出现 算是新的对象 并不是要修改的对象 也就是说是 SET 前的那个 Article
+ ```
+ + 注意的问题
+ ```
+ 2019-05-13 16:51:18.122 ERROR 5320 --- [nio-9004-exec-1] o.h.engine.jdbc.spi.SqlExceptionHelper   : Table 'tensquare_base.tb_article' doesn't exist
+ 其实是数据库连错了
+ ```
+ 
+ + 实现文章的缓存处理
+    1. 需要在启动类上 添加注解 @EnableCacheing 开启缓存
+    2. 在需要缓存的方法上添加注解 @Cacheable(value="xxx",key="#xxx")  参数 value 表示 cacheManage 的名称 参数 key 表示 缓存的键
+    3. 如果修改,添加 需要删除原来的缓存 @CacheEvict(value="xxx",key="#xx.xxx") 

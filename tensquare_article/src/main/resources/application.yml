@@ -3,7 +3,7 @@ server:
   # ===================================================================
   # 端口号
   # ===================================================================
-  port: 9002
+  port: 9004
   # ===================================================================
   # springboot内置Tomcat优化配置
   # ===================================================================
@@ -21,10 +21,10 @@ spring:
   # 项目名称
   # ===================================================================
   application:
-    name: tensquare-recruit
+    name: tensquare-article
 
   # ===================================================================
-  # springboot中配置springmvc异常抛出
+  # springboot中配置springMvc异常抛出
   # ===================================================================
   mvc:
     throw-exception-if-no-handler-found: true
@@ -34,7 +34,7 @@ spring:
   # ===================================================================
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.179.131:3306/tensquare_recruit?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://192.168.179.131:3306/tensquare_article?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: 123456
 
@@ -45,6 +45,21 @@ spring:
     database: mysql
     show-sql: true
     open-in-view: false   # 禁用视图，解决启动 warm 警告
+  # ===================================================================
+  # redis 缓存设置
+  # ===================================================================
+  redis:
+    host: 192.168.179.131
+    database: 0
+    port: 6379
+    password:    # 密码（默认为空）
+    timeout: 6000ms  # 连接超时时长（毫秒）
+    jedis:
+      pool:
+        max-active: 1000    # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1ms      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 10        # 连接池中的最大空闲连接
+        min-idle: 5         # 连接池中的最小空闲连接
 
 # ===================================================================
 # logger 日志 配置
@@ -53,4 +68,4 @@ logging:
   file:
     max-history: 10
     max-size: 10MB
-  path: tensquare_recruit
+  path: tensquare_article

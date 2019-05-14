@@ -39,7 +39,7 @@ public class LabelService {
     /**
      * 查询全部标签
      */
-    @Cacheable(value = "label")
+    //@Cacheable(value = "label")
     @Transactional(propagation = Propagation.SUPPORTS)
     public List<Label> findAll(){
         return LABELDAO.findAll();

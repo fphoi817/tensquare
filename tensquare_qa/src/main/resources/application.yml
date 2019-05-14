@@ -51,4 +51,4 @@ logging:
   file:
     max-history: 10
     max-size: 10MB
-  path: tensquare_base
+  path: tensquare_qa
