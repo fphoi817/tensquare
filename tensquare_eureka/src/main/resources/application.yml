@@ -1,0 +1,8 @@
+server:
+  port: 6868
+eureka:
+  client:
+    register-with-eureka: false     # 是否将自己注册到Eureka服务中, 模块本身作为服务器, 则无需注册  默认值为 true
+    fetch-registry: false
+    service-url:
+      defaultZone: http://127.0.0.1:${server.port}/eureka/

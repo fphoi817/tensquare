@@ -76,3 +76,6 @@
     1. 需要在启动类上 添加注解 @EnableCacheing 开启缓存
     2. 在需要缓存的方法上添加注解 @Cacheable(value="xxx",key="#xxx")  参数 value 表示 cacheManage 的名称 参数 key 表示 缓存的键
     3. 如果修改,添加 需要删除原来的缓存 @CacheEvict(value="xxx",key="#xx.xxx") 
+
+
+### public Object getHeader(@RequestHeader("access_token") String accessToken, String id)可以获取到浏览器头信息    

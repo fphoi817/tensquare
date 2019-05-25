@@ -2,11 +2,13 @@ package com.tensquare.qa.pojo;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "tb_pl")
+@IdClass(Pl.class)              // 联合主键
 public class Pl implements Serializable {
     @Id
     private String problemid;   // 问题ID
