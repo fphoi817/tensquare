@@ -1,4 +1,4 @@
-package entity;
+package com.tensquare.tools;
 
 import java.util.List;
 

@@ -2,6 +2,7 @@ package com.tensquare.spit.service;
 
 import com.tensquare.spit.dao.SpitDao;
 import com.tensquare.spit.pojo.Spit;
+import com.tensquare.utils.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +13,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import tools.IdWorker;
 
 import java.util.Date;
 import java.util.List;

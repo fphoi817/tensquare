@@ -1,6 +1,6 @@
 package com.tensquare.friend.controller;
 
-import entity.ResponseResult;
+import com.tensquare.tools.ResponseResult;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin

@@ -1,17 +1,19 @@
 package com.tensquare.user.service;
 
+import com.tensquare.tools.JwtUtil;
 import com.tensquare.user.dao.UserDao;
 import com.tensquare.user.pojo.User;
+import com.tensquare.utils.IdWorker;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import tools.IdWorker;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -32,6 +34,12 @@ public class UserService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     /**
@@ -67,8 +75,7 @@ public class UserService {
      * 增加用户
      */
     @Transactional(propagation = Propagation.REQUIRED)
-    public void add(User user, String code){
-
+    public Map<String, String> add(User user, String code){
         String syscode = redisTemplate.opsForValue().get("smscode_"+user.getMobile());
         if(StringUtils.isEmpty(syscode)){
             throw new RuntimeException("请输入验证码");
@@ -76,11 +83,16 @@ public class UserService {
         if(!code.equals(syscode)){
             throw new RuntimeException("验证码错误");
         }
-
+        User exits = userDao.findByMobile(user.getMobile());
+        if(exits != null){
+            throw new RuntimeException("不要重复操作");
+        }
         String id = String.valueOf(idWorker.nextId());
         User newUser = new User();
         BeanUtils.copyProperties(user, newUser);
+        String encode = bCryptPasswordEncoder.encode(newUser.getPassword());
         newUser.setId(id);
+        newUser.setPassword(encode);
         newUser.setFollowcount(0);
         newUser.setFanscount(0);
         newUser.setOnline(0L);
@@ -88,6 +100,32 @@ public class UserService {
         newUser.setUpdatedate(new Date());
         newUser.setLastdate(new Date());
         userDao.save(newUser);
+        return getStringStringMap(user);
+    }
+
+
+    /**
+     * 用户登录
+     */
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public Map<String, String> login(String mobile, String password) {
+        User user = userDao.findByMobile(mobile);
+        if(user != null && bCryptPasswordEncoder.matches(password, user.getPassword())){
+            return getStringStringMap(user);
+        }else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取token
+     */
+    private Map<String, String> getStringStringMap(User user) {
+        String token = jwtUtil.createJWT(user.getId(), user.getLoginname(), "normal");
+        Map<String, String> map = new HashMap<>();
+        map.put("token", token);
+        map.put("loginname", user.getLoginname());
+        return map;
     }
 
 }

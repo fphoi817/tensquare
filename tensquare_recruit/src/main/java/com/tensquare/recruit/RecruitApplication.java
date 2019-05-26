@@ -1,9 +1,9 @@
 package com.tensquare.recruit;
 
+import com.tensquare.utils.IdWorker;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import tools.IdWorker;
 
 @SpringBootApplication
 public class RecruitApplication {

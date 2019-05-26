@@ -1,7 +1,7 @@
 package com.tensquare.article.controller;
 
 import com.tensquare.article.service.ArticleService;
-import entity.ResponseResult;
+import com.tensquare.tools.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

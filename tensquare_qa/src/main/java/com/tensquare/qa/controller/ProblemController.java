@@ -1,10 +1,9 @@
 package com.tensquare.qa.controller;
 
-import com.tensquare.qa.client.BaseClient;
 import com.tensquare.qa.pojo.Problem;
 import com.tensquare.qa.service.ProblemService;
-import entity.PageResult;
-import entity.ResponseResult;
+import com.tensquare.tools.PageResult;
+import com.tensquare.tools.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +14,12 @@ import org.springframework.web.bind.annotation.*;
 public class ProblemController {
 
     private final ProblemService problemService;
-    private final BaseClient baseClient;
+    // private final BaseClient baseClient;
 
     @Autowired
-    public ProblemController(ProblemService problemService, BaseClient baseClient){
+    public ProblemController(ProblemService problemService){
         this.problemService = problemService;
-        this.baseClient = baseClient;
+        // this.baseClient = baseClient;
     }
 
     // 根据标签ID 查询多个问题的列表  标签和问题是多对多关系  按最新回复时间排序
@@ -46,9 +45,15 @@ public class ProblemController {
         return ResponseResult.SUCCESS(new PageResult<>(problemPage.getTotalElements(), problemPage.getContent()));
     }
 
-    // Spring cloud 连接测试
-    @GetMapping("/label/findById/{labelId}")
-    public ResponseResult findByLabelId(@PathVariable String labelId){
-        return baseClient.findById(labelId);
+    @PostMapping("/add")
+    public ResponseResult add(@RequestBody Problem problem){
+        problemService.add(problem);
+        return ResponseResult.SUCCESS();
     }
+
+    // Spring cloud 连接测试
+//    @GetMapping("/label/findById/{labelId}")
+//    public ResponseResult findByLabelId(@PathVariable String labelId){
+//        return baseClient.findById(labelId);
+//    }
 }

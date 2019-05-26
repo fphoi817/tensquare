@@ -1,6 +1,6 @@
 package com.tensquare.jms;
 
-import entity.ResponseResult;
+import com.tensquare.tools.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;

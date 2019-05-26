@@ -2,8 +2,8 @@ package com.tensquare.spit.controller;
 
 import com.tensquare.spit.pojo.Spit;
 import com.tensquare.spit.service.SpitService;
-import entity.PageResult;
-import entity.ResponseResult;
+import com.tensquare.tools.PageResult;
+import com.tensquare.tools.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;

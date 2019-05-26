@@ -22,7 +22,7 @@ public class User {
     private Date regdate;
     private Date updatedate;
     private Date lastdate;
-    private long online;
+    private Long online;
     private String interest;
     private String personality;
     private int fanscount;
@@ -124,11 +124,11 @@ public class User {
         this.lastdate = lastdate;
     }
 
-    public long getOnline() {
+    public Long getOnline() {
         return online;
     }
 
-    public void setOnline(long online) {
+    public void setOnline(Long online) {
         this.online = online;
     }
 

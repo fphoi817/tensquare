@@ -1,7 +1,7 @@
 package com.tensquare.recruit.controller;
 
 import com.tensquare.recruit.service.EnterpriseService;
-import entity.ResponseResult;
+import com.tensquare.tools.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

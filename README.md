@@ -78,4 +78,21 @@
     3. 如果修改,添加 需要删除原来的缓存 @CacheEvict(value="xxx",key="#xx.xxx") 
 
 
-### public Object getHeader(@RequestHeader("access_token") String accessToken, String id)可以获取到浏览器头信息    
+###### public Object getHeader(@RequestHeader("access_token") String accessToken, String id)可以获取到浏览器头信息
+
+### 密码加密与微服务鉴权JWT
+ + BCrypt 密码加密
+    1. 导入 spring-boot-starter-security 依赖
+    2. 添加配置类 配置类继承 WebSecurityConfigurerAdapter 并重写 configure(HttpSecurity http) 方法, 这个类上需添加两个注解 @Configuration @EnableWebSecurity
+    3. 在启动类中配置Bean 注入 BCryptPasswordEncoder 
+    4. 在MySQL数据库中字段类型为 bigint 对应Java 类型Long, 而不是long
+ 
+ + 添加拦截器
+    1. 继承 HandlerInterceptorAdapter 适配器 可以重新三个方法
+    2. 预处理 perHandle 可以进行编码, 安全控制等处理
+    3. 后处理 postHandle 可以修改 ModelAndView
+    4. 返回处理 afterCompletion 可以根据exception 是否null 判断是否发生异常, 进行日志记录
+
+ + 添加配置类 注册拦截器
+    1. 添加配置类 注解 @Configuration  
+    2. 重新 addInterceptors(InterceptorRegistry registry) 添加注册拦截器
