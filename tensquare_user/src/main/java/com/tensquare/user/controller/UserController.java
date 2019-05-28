@@ -46,4 +46,19 @@ public class UserController {
         }
     }
 
+    /**
+     * 更新粉丝数
+     */
+    @PutMapping("/incfans/{userid}/{x}")
+    public void incFanscount(@PathVariable String userid, @PathVariable int x){
+        userService.incFanscount(userid, x);
+    }
+
+    /**
+     * 变更关注数
+     */
+    @PutMapping("/incfollow/{userid}/{x}")
+    public void incFollowcount(@PathVariable String userid, @PathVariable int x){
+        userService.incFollowcount(userid, x);
+    }
 }

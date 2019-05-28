@@ -2,6 +2,7 @@ package com.tensquare.friend.config;
 
 import com.tensquare.friend.filter.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -13,6 +14,7 @@ public class WebMvcConfiguration {
     @Autowired
     private JwtFilter jwtFilter;
 
+    @Bean
     public WebMvcConfigurer webMvcConfigurer(){
         return new WebMvcConfigurer() {
 

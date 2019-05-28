@@ -11,7 +11,10 @@ public interface FriendDao extends JpaRepository<Friend, String> {
     int selectCount(String userid, String friendid);
 
     @Modifying
-    @Query("UPdate Friend f SET f.islike = ?3 WHERE f.userid = ?1 AND f.friendid = ?2")
+    @Query("UPDATE Friend f SET f.islike = ?3 WHERE f.userid = ?1 AND f.friendid = ?2")
     void updateLike(String userid, String friendid, String islike);
 
+    @Modifying
+    @Query("DELETE FROM Friend f WHERE f.userid = ?1 AND f.friendid = ?2")
+    void deleteFriend(String userid, String friendid);
 }

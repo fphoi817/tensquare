@@ -44,4 +44,11 @@ public class FriendService {
         noFriend.setFriendid(friendid);
         nofriendDao.save(noFriend);
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void deleteFriend(String userid, String friendid) {
+        friendDao.deleteFriend(userid, friendid);
+        friendDao.updateLike(friendid, userid, "0");
+        addNofriend(userid, friendid);
+    }
 }

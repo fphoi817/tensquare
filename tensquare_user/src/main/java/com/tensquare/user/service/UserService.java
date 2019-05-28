@@ -100,7 +100,7 @@ public class UserService {
         newUser.setUpdatedate(new Date());
         newUser.setLastdate(new Date());
         userDao.save(newUser);
-        return getStringStringMap(user);
+        return getStringStringMap(newUser);
     }
 
 
@@ -126,6 +126,22 @@ public class UserService {
         map.put("token", token);
         map.put("loginname", user.getLoginname());
         return map;
+    }
+
+    /**
+     * 更新粉丝数
+     */
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void incFanscount(String userid, int x){
+        userDao.incFanscount(userid, x);
+    }
+
+    /**
+     * 更新关注数
+     */
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void incFollowcount(String userid, int x){
+        userDao.incFollowcount(userid, x);
     }
 
 }
