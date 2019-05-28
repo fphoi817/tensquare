@@ -1,4 +1,4 @@
-package com.tensquare.friend.controller;
+package com.tensquare.friend.dao;
 
 import com.tensquare.friend.pojo.NoFriend;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,6 @@
 package com.tensquare.friend.controller;
 
 import com.tensquare.friend.service.FriendService;
-import com.tensquare.friend.service.NoFriendService;
 import com.tensquare.tools.ResponseResult;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,6 @@ public class FriendController {
 
     @Autowired
     private FriendService friendService;
-
-    @Autowired
-    private NoFriendService noFriendService;
 
     @Autowired
     private HttpServletRequest request;
@@ -39,7 +35,7 @@ public class FriendController {
                 return ResponseResult.FAILED("已经添加了好友");
             }
         }else {
-            noFriendService.addNofriend(claims.getId(), friendid);
+            friendService.addNofriend(claims.getId(), friendid);
         }
         return ResponseResult.SUCCESS();
     }
