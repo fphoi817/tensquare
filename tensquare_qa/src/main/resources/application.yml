@@ -56,12 +56,12 @@ logging:
 # ===================================================================
 # Spring cloud eureka 配置 客服端
 # ===================================================================
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone: http://127.0.0.1:6868/eureka/
-#  instance:
-#    prefer-ip-address: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:6868/eureka/
+  instance:
+    prefer-ip-address: true
 
 # ===================================================================
 # Jwt 配置

@@ -1,16 +1,16 @@
 package com.tensquare.user;
 
-import com.spring4all.swagger.EnableSwagger2Doc;
 import com.tensquare.tools.JwtUtil;
 import com.tensquare.utils.IdWorker;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableConfigurationProperties
-@EnableSwagger2Doc
+@EnableEurekaClient
 @SpringBootApplication
 public class UserApplication {
     public static void main(String[] args) {
