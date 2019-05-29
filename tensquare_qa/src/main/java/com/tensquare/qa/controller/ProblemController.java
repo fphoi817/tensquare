@@ -1,11 +1,12 @@
 package com.tensquare.qa.controller;
 
-import com.tensquare.qa.client.BaseClient;
+import com.tensquare.qa.client.BaseLabelClient;
 import com.tensquare.qa.pojo.Problem;
 import com.tensquare.qa.service.ProblemService;
 import com.tensquare.tools.PageResult;
 import com.tensquare.tools.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 public class ProblemController {
 
     private final ProblemService problemService;
-    private final BaseClient baseClient;
+    private final BaseLabelClient baseLabelClient;
 
     @Autowired
-    public ProblemController(ProblemService problemService, BaseClient baseClient){
+    public ProblemController(ProblemService problemService, @Qualifier("baseLabelClientImpl") BaseLabelClient baseLabelClient){
         this.problemService = problemService;
-        this.baseClient = baseClient;
+        this.baseLabelClient = baseLabelClient;
     }
 
     // 根据标签ID 查询多个问题的列表  标签和问题是多对多关系  按最新回复时间排序
@@ -55,6 +56,6 @@ public class ProblemController {
     // Spring cloud 连接测试
     @GetMapping("/label/findById/{labelId}")
     public ResponseResult findByLabelId(@PathVariable String labelId){
-        return baseClient.findById(labelId);
+        return baseLabelClient.findById(labelId);
     }
 }

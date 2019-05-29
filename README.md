@@ -19,6 +19,7 @@
  + 添加 pojo 层 
     1. jpa 规定实体类上需要添加 @Entity @Table(name = "tb_xxx") 主键@id 
     2. 在分布式 微服务的架构中 实体类在各模块中通信 需要将实体类实现 Serializable 接口
+    3. 如果是联合主键 需要在类上添加 @IdClass(Clazz.class)
  
  + 添加 dao 层
     1. jpa 规定在dao接口中 需要继承 JpaRepository<Clazz, id的类型>, 同时如果是复杂类型(比如分页) 还要需要继承 JpaSpecificationExecutor<Clazz> 
@@ -77,7 +78,6 @@
     2. 在需要缓存的方法上添加注解 @Cacheable(value="xxx",key="#xxx")  参数 value 表示 cacheManage 的名称 参数 key 表示 缓存的键
     3. 如果修改,添加 需要删除原来的缓存 @CacheEvict(value="xxx",key="#xx.xxx") 
 
-
 ###### public Object getHeader(@RequestHeader("access_token") String accessToken, String id)可以获取到浏览器头信息
 
 ### 密码加密与微服务鉴权JWT
@@ -88,7 +88,8 @@
     4. 在MySQL数据库中字段类型为 bigint 对应Java 类型Long, 而不是long
  
  + 添加拦截器
-    1. 继承 HandlerInterceptorAdapter 适配器 可以重新三个方法
+    1. 继承 HandlerInterceptorAdapter 适配器 可以重写三个方法
+        > 也可直接实现 implements HandlerInterceptor 重写三个方法
     2. 预处理 perHandle 可以进行编码, 安全控制等处理
     3. 后处理 postHandle 可以修改 ModelAndView
     4. 返回处理 afterCompletion 可以根据exception 是否null 判断是否发生异常, 进行日志记录
@@ -96,3 +97,7 @@
  + 添加配置类 注册拦截器
     1. 添加配置类 注解 @Configuration  
     2. 重新 addInterceptors(InterceptorRegistry registry) 添加注册拦截器
+    3. 添加 配置类 进行拦截器的注册 该类需要添加 @configuration 注解 并且重写这个接口对象实例 new WebMvcConfigurer(){ ... } 
+    4. addCorsMappings(CorsRegistry registry) 重写父类提供的跨域请求处理的接口
+    5. addInterceptors(InterceptorRegistry registry) 注册拦截器
+    6. 该配置类的方法实例对象需要加上 @Bean 去注入到spring容器中
