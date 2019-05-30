@@ -21,6 +21,8 @@
         <module>tensquare_search</module>
         <module>tensquare_user</module>
         <module>tensquare_jms</module>
+        <module>tensquare_manage</module>
+        <module>tensquare_web</module>
     </modules>
 
     <!-- Inherit defaults from Spring Boot -->

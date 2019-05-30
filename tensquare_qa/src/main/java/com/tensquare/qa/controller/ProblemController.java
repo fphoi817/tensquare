@@ -6,7 +6,6 @@ import com.tensquare.qa.service.ProblemService;
 import com.tensquare.tools.PageResult;
 import com.tensquare.tools.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +18,7 @@ public class ProblemController {
     private final BaseLabelClient baseLabelClient;
 
     @Autowired
-    public ProblemController(ProblemService problemService, @Qualifier("baseLabelClientImpl") BaseLabelClient baseLabelClient){
+    public ProblemController(ProblemService problemService, BaseLabelClient baseLabelClient){
         this.problemService = problemService;
         this.baseLabelClient = baseLabelClient;
     }
