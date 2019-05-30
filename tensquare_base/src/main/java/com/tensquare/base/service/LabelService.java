@@ -35,6 +35,7 @@ public class LabelService {
         this.IDWORKER = idWorker;
     }
 
+
     /**
      * 查询全部标签
      */

@@ -5,6 +5,8 @@ import com.tensquare.base.service.LabelService;
 import com.tensquare.tools.PageResult;
 import com.tensquare.tools.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +14,14 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
+@RefreshScope
 @RequestMapping("/label")
 public class LabelController {
 
     private final LabelService LABELSERVICE;
+
+    @Value("${ip}")
+    private String ip;
 
     @Autowired
     public LabelController(LabelService labelService) {
@@ -30,6 +36,7 @@ public class LabelController {
 
     @GetMapping("/findById/{labelId}")
     public ResponseResult findById(@PathVariable String labelId) {
+        System.out.println(ip);
         return ResponseResult.SUCCESS(LABELSERVICE.findById(labelId));
     }
 
