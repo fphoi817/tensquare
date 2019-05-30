@@ -6,7 +6,6 @@ import com.tensquare.utils.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +47,6 @@ public class LabelService {
     /**
      * 根据ID 查询标签
      */
-    @Cacheable(value = "label", key = "#id")
     @Transactional(propagation = Propagation.SUPPORTS)
     public Label findById(String id){
         return LABELDAO.findById(id).get();
