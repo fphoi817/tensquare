@@ -23,6 +23,7 @@
         <module>tensquare_jms</module>
         <module>tensquare_manage</module>
         <module>tensquare_web</module>
+        <module>tensquare_config</module>
     </modules>
 
     <!-- Inherit defaults from Spring Boot -->

@@ -60,7 +60,7 @@
 ### 添加 tensquare_article 模块
 
  + 在JPA 的持久层中除了查询 其他操作都应该加上 注解 @Modifying
- ```
+ ```java
     @Modifying
     @Query("UPDATE Article art SET art.state = '1' WHERE art.id = ?1")
     
@@ -113,7 +113,7 @@
     2. 导入 SpringCloud Eureka 服务端的依赖 spring-cloud-starter-netflix-eureka-server
     3. 启动类 添加 @EnableEurekaServer 注解
     4. 配置文件 添加如下配置
-        ```
+        ```yml
         server:
           port: 6868        # 自定义
         eureka:
@@ -130,7 +130,7 @@
     1. 在需要注册到服务端的模块添加依赖    spring-cloud-starter-netflix-eureka-client
 
     2. 配置文件中
-       ```
+       ```yml
        eureka:
          client:
            service-url:	# Eureka客户端与Eureka服务端进行交互的地址
@@ -153,7 +153,195 @@
    6. 在调用模块的controller 中注入接口, 并调用
 
 ######  熔断器 Hystrix
- + 
+ + 在需要调用的模块中
+
+   1. 添加配置 
+
+      ```yml
+      feign:
+        hystrix:
+          enabled: true
+      ```
+
+   2. 在调用的模块中的client包的接口 创建impl 包 ,添加接口的实现类 重新接口的方法 实现由于被调用的模块如果出错后, 执行的逻辑, 避免自己出错而引起的雪崩效应 注意添加@component 注解 将实现类添加的Spring容器中
+
+   3. 修改client 中接口的注解 @FeignClient(name = "tensquare-base", fallback = BaseLabelClientImpl.class)  注意 接口也需要添加一个 @component 注解
+
+      
+
+###### 网关 Zuul
+ + 创建一个后端管理模块 manage 和一个前端访问模块 web
+
+    1. 添加依赖
+
+       ```xml
+           <dependencies>
+               <dependency>
+                   <groupId>org.springframework.cloud</groupId>
+                   <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+               </dependency>
+       
+               <dependency>
+                   <groupId>org.springframework.cloud</groupId>
+                   <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+               </dependency>
+           </dependencies>
+           
+           ### 注意这里的artifactID 都是带有starter的依赖
+       ```
+
+    2. 添加配置文件
+
+       ```yml
+       spring:
+         # ===================================================================
+         # 项目名称
+         # ===================================================================
+         application:
+           name: tensquare-manage
+       
+       # ===================================================================
+       # Spring cloud eureka 配置 客服端
+       # ===================================================================
+       eureka:
+         client:
+           service-url:   # Eureka客户端与Eureka服务端进行交互的地址
+             defaultZone: http://127.0.0.1:6868/eureka/
+         instance:
+           prefer-ip-address: true
+       # ===================================================================
+       # Spring cloud zuul 配置 网关路由
+       # ===================================================================
+       zuul:
+         routes:
+           tensquare-gathering:    # 活动
+             path: /gathering/**   # 配置请求URL的请求规则
+             serviceId: tensquare-gathering    # 指定 eureka 注册中心的服务ID
+           tensquare-article:      # 文章
+             path: /article/**     # 配置请求URL的请求规则
+             serviceId: tensquare-article      # 指定 eureka 注册中心的服务ID
+           tensquare-base:         # 基础
+             path: /base/**        # 配置请求URL的请求规则
+             serviceId: tensquare-base         # 指定 eureka 注册中心的服务ID
+           tensquare-friend:       # 交友
+             path: /friend/**      # 配置请求URL的请求规则
+             serviceId: tensquare-friend       # 指定 eureka 注册中心的服务ID
+           tensquare-qa:           # 问答
+             path: /qa/**          # 配置请求URL的请求规则
+             serviceId: tensquare-qa           # 指定 eureka 注册中心的服务ID
+           tensquare-recruit:      # 招聘
+             path: /recruit/**     # 配置请求URL的请求规则
+             serviceId: tensquare-recruit      # 指定 eureka 注册中心的服务ID
+           tensquare-spit:         # 吐槽
+             path: /spit/**        # 配置请求URL的请求规则
+             serviceId: tensquare-spit         # 指定 eureka 注册中心的服务ID
+           tensquare-user:         # 用户
+             path: /user/**        # 配置请求URL的请求规则
+             serviecId: tensquare-user         # 指定 eureka 注册中心的服务ID
+       ```
+
+    3. 给启动类添加注解  @EnableZuulProxy
+
+    4. 注意访问的时候端口号是网关的端口号, 并且端口号后面是网关路由匹配的规则 然后才是访问接口的URL映射地址, 
+
+    5. 还有最后网关好像需要最后启动,不然会报错
 
 
 
+ + 配置 Zuul 过滤器
+
+    1. 添加一个过滤器类 并继承 ZuulFilter 
+
+    2. 重写四个方法
+
+       ```java
+           @Override
+           public String filterType() {
+               return "pre";       // 前置过滤器
+           }
+       
+           @Override
+           public int filterOrder() {
+               return 0;           // 优先级为0 数字越大 优先级越低
+           }
+       
+           @Override
+           public boolean shouldFilter() {
+               return true;       // 是否执行过滤器, 此处为true, 说明需要过滤
+           }
+       
+           @Override
+           public Object run() throws ZuulException {
+               System.out.println("zuul 过滤器执行了");
+               return null;
+           }
+       ```
+
+    3. filterType ：返回一个字符串代表过滤器的类型，在zuul中定义了四种不同生命周期的过 滤器类型 
+
+       + pre: 请求路由之前调用
+       + route: 在路由请求的时候调用
+       + post: router 和 error 过滤器之后被调用
+       + error: 处理请求发送错误时调用
+
+    4. filterOrder: 通过int 值来定义过滤器的执行顺序
+
+    5. shouldFilter: 返回一个boolean类型来判断该过滤器是否要执行，所以通过此函数可 实现过滤器的开关。在上例中，我们直接返回true，所以该过滤器总是生效
+
+    6. run: 过滤器的具体逻辑
+
+    7. webfilter 并不需要权限校验, 因为未登录的用户也可以浏览信息, 而managefilter 则需要验证, 因为后端管理是需要权限的
+
+
+
+###### 配置中心 Spring-cloud-config 配置中心
+
++ 配置服务端
+
+  1. Git 新建一个仓库, 并将配置文件 改名为 {application}-{profile}.yml 上传
+
+  2. 创建新模块 tensquare_config   添加新的依赖  Spring-cloud-config-server
+
+  3. 创建启动类  添加注解 @EnableConfigServer  
+
+  4. 编写配置文件 
+
+     ```yml
+     server:
+       # ===================================================================
+       # 端口号
+       # ===================================================================
+       port: 12000
+     spring:
+       # ===================================================================
+       # 项目名称
+       # ===================================================================
+       application:
+         name: tensquare-config
+       # ===================================================================
+       # spring-cloud-config 配置中心服务
+       # ===================================================================  
+       cloud:
+         config:
+           server:
+             git:
+               uri: https://gitee.com/Freya0016/tensquare-config.git
+     ```
+
+  5. 注意服务端：Authentication is required but no CredentialsProvider has been registered 异常信息 需要将Git仓库改成公开的才行
+
+
+
++ 配置客服端
+
+  1. 在需要配置的模块中 添加 spring-cloud-starter-config 依赖
+
+  2. 添加bootstrap.yml 删除application.yml
+
+     ```
+     
+     ```
+
+     
+
+  
