@@ -342,6 +342,71 @@
      
      ```
 
-     
 
-  
+
+
+### 持续集成
+
+###### DockerMaven 插件
+
++ 通过Maven插件自动部署
+
+  1. 修改宿主机的docker配置，让其可以远程访问
+
+     ```shell
+     vi /lib/systemd/system/docker.service
+     
+     其中 ExecStart=后添加配置 ‐H tcp://0.0.0.0:2375 ‐H unix:///var/run/docker.sock
+     
+     具体位置 插入到
+     --seccomp-profile ... \
+     ‐H tcp://0.0.0.0:2375 ‐H unix:///var/run/docker.sock \
+     $OPTIONS \
+     
+     systemctl daemon‐reload  	// 重新载入docker 守护线程
+     systemctl restart docker  	// 重启docker 服务
+     docker start registry		// 重启私有仓库服务
+     
+     注意其中 一定要开启防护墙 的端口 2375  不然无法访问
+     firewall-cmd --zone=public --add-port=80/tcp --permanent    （--permanent永久生效，没有此参数重启后失效）
+     firewall-cmd --reload
+     查看所有打开的端口： firewall-cmd --zone=public --list-ports
+     ```
+
+  2. 在工程pom.xml 增加配置
+
+     ```xml
+     	<build>
+             <finalName>app</finalName>  <!-- maven 打包上传后的文件名 -->
+             <plugins>
+                 <plugin>
+                     <groupId>org.springframework.boot</groupId>
+                     <artifactId>spring-boot-maven-plugin</artifactId>
+                 </plugin>	<!-- springboot 整合 maven 插件 -->	
+                 <plugin>
+                     <groupId>com.spotify</groupId>
+                     <artifactId>docker-maven-plugin</artifactId>
+                     <version>0.4.13</version>
+     <!-- docker的maven插件 官网：https://github.com/spotify/docker-maven-plugin -->
+                     <configuration>               <imageName>ip:5000/${project.artifactId}:${project.version}</imageName>
+     <!-- 生成后的镜像名 ip地址:端口号/artifactId/version -->                    
+                         <baseImage>jdk1.8</baseImage>
+     <!-- 集成的基础镜像 springboot 打包的项目 需要依赖 JDK1.8运行环境 -->
+                         <entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+     <!-- docker把镜像生成容器后 执行该命令 java -jar 项目文件名.jar -->                 
+                         <resources>
+                             <resource>
+                                 <targetPath>/</targetPath>
+                                 <directory>${project.build.directory}</directory>
+                                 <include>${project.build.finalName}.jar</include>
+                             </resource>
+                         </resources>
+                         <dockerHost>ip:2375</dockerHost>
+                         <!-- docker 连接地址 -->
+                     </configuration>
+                 </plugin>
+             </plugins>
+         </build>
+     ```
+
+     
