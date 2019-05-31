@@ -4,12 +4,14 @@ import com.tensquare.tools.ResponseResult;
 import com.tensquare.user.pojo.Admin;
 import com.tensquare.user.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
+@RefreshScope
 @RequestMapping("/admin")
 public class AdminController {
 

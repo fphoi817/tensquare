@@ -5,11 +5,13 @@ import com.tensquare.spit.service.SpitService;
 import com.tensquare.tools.PageResult;
 import com.tensquare.tools.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
+@RefreshScope
 @RequestMapping("/spit")
 public class SpitController {
 

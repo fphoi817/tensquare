@@ -4,11 +4,13 @@ import com.tensquare.tools.ResponseResult;
 import com.tensquare.user.pojo.User;
 import com.tensquare.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
+@RefreshScope
 @RequestMapping("/user")
 public class UserController {
 
