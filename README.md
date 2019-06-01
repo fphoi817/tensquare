@@ -60,16 +60,16 @@
 ### 添加 tensquare_article 模块
 
  + 在JPA 的持久层中除了查询 其他操作都应该加上 注解 @Modifying
- ```java
+ ```
     @Modifying
     @Query("UPDATE Article art SET art.state = '1' WHERE art.id = ?1")
     
-    注意: UPDATE Article SET Article.state = '1' WHERE Article.id = ?1 这样写会报空指针异常 
+    /* 注意: UPDATE Article SET Article.state = '1' WHERE Article.id = ?1 这样写会报空指针异常 
     update Article set state='1' where id=?1 正确的也可以写成这样
-    自己分析 应该是 Article SET 后面 再次出现 算是新的对象 并不是要修改的对象 也就是说是 SET 前的那个 Article
+    自己分析 应该是 Article SET 后面 再次出现 算是新的对象 并不是要修改的对象 也就是说是 SET 前的那个 Article */
  ```
  + 注意的问题
- ```
+ ```shell
  2019-05-13 16:51:18.122 ERROR 5320 --- [nio-9004-exec-1] o.h.engine.jdbc.spi.SqlExceptionHelper   : Table 'tensquare_base.tb_article' doesn't exist
  其实是数据库连错了
  ```
@@ -187,7 +187,7 @@
                </dependency>
            </dependencies>
            
-           ### 注意这里的artifactID 都是带有starter的依赖
+           <!-- 注意这里的artifactID 都是带有starter的依赖 -->
        ```
 
     2. 添加配置文件
@@ -255,25 +255,28 @@
     2. 重写四个方法
 
        ```java
-           @Override
-           public String filterType() {
-               return "pre";       // 前置过滤器
-           }
-       
-           @Override
-           public int filterOrder() {
-               return 0;           // 优先级为0 数字越大 优先级越低
-           }
-       
-           @Override
-           public boolean shouldFilter() {
-               return true;       // 是否执行过滤器, 此处为true, 说明需要过滤
-           }
-       
-           @Override
-           public Object run() throws ZuulException {
-               System.out.println("zuul 过滤器执行了");
-               return null;
+           @Component
+           public class ManageFilter extends ZuulFilter {
+               @Override
+               public String filterType() {
+                   return "pre";       // 前置过滤器
+               }
+           
+               @Override
+               public int filterOrder() {
+                   return 0;           // 优先级为0 数字越大 优先级越低
+               }
+           
+               @Override
+               public boolean shouldFilter() {
+                   return true;       // 是否执行过滤器, 此处为true, 说明需要过滤
+               }
+           
+               @Override
+               public Object run() throws ZuulException {
+                   System.out.println("zuul 过滤器执行了");
+                   return null;
+               }
            }
        ```
 
@@ -388,8 +391,9 @@
                      <artifactId>docker-maven-plugin</artifactId>
                      <version>0.4.13</version>
      <!-- docker的maven插件 官网：https://github.com/spotify/docker-maven-plugin -->
-                     <configuration>               <imageName>ip:5000/${project.artifactId}:${project.version}</imageName>
-     <!-- 生成后的镜像名 ip地址:端口号/artifactId/version -->                    
+                     <configuration>               
+                         <imageName>{ip}:5000/${project.artifactId}:${project.version}</imageName>
+     <!-- 标记要上传的(docker tag)镜像名 ip地址:端口号/artifactId/version -->                    
                          <baseImage>jdk1.8</baseImage>
      <!-- 集成的基础镜像 springboot 打包的项目 需要依赖 JDK1.8运行环境 -->
                          <entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
@@ -401,7 +405,7 @@
                                  <include>${project.build.finalName}.jar</include>
                              </resource>
                          </resources>
-                         <dockerHost>ip:2375</dockerHost>
+                         <dockerHost>http//{ip}:2375</dockerHost>
                          <!-- docker 连接地址 -->
                      </configuration>
                  </plugin>

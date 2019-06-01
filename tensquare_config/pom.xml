@@ -29,4 +29,38 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <finalName>tensquare_config</finalName>  <!-- maven 打包上传后的文件名 -->
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>	<!-- springboot 整合 maven 插件 -->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.13</version>
+                <!-- docker的maven插件 官网：https://github.com/spotify/docker-maven-plugin -->
+                <configuration>
+                    <imageName>192.168.179.132:5000/${project.artifactId}:${project.version}</imageName>
+                    <!-- 标记要上传的(docker tag)镜像名 ip地址:端口号/artifactId/version -->
+                    <baseImage>jdk1.8</baseImage>
+                    <!-- 集成的基础镜像 springboot 打包的项目 需要依赖 JDK1.8运行环境 -->
+                    <entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+                    <!-- docker把镜像生成容器后 执行该命令 java -jar 项目文件名.jar -->
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                    <dockerHost>http://192.168.179.132:2375</dockerHost>
+                    <!-- docker 连接地址 -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
