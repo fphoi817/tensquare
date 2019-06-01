@@ -427,8 +427,9 @@
       所以需要写上jenkins能识别的路径, 如果写成宿主机的路径 /home/jenkins/RepMaven 
       会无法找到文件 ,maven是在jenkins中运行的, 所有的依赖将会下载到jenkins 容器对应路径的
       文件下 /var/jenkins_home/RepMaven        教训啊
+
    7. 需要给容器jenkins挂载的文件授权chown -R 1000:1000 jenkins/ 给UID为1000的权限 不然容器无法启动
- 
+
  + 安装jenkins
    1. 需要安装 docker.io/jenkins/jenkins 而docker.io/jenkins版本太旧无法下载插件
    2. docker run -d --name jenkins -p 8888:8080 -p 50000:50000 -v **/home/jenkins:/var/jenkins_home** --privileged docker.io/jenkins/jenkins
@@ -439,14 +440,31 @@
       而应该是 /var/jenkins_home/java/jdk1.8.0_201 因为JDK 是在jenkins中运行的 配置的路径也应该是
       容器挂载的映射地址 maven 也一样 不能是 /home/jenkins/maven/apache-maven-3.6.1
       而应该是 /var/jenkins_home/maven/apache-maven-3.6.1
-    
+
     > 解释一下我这里为什么是/var/jenkins_home/
       因为我首先jenkins是安装在docker里的，这时候使用的就是docker里的路径，
       我们上面运行jenkins的时候，看我标红的地方；
       这里我的jdk是复制了一份放在/home/jenkins/下面的，所以这里路径就可以直接这么写了；
       注意：这里是JAVA_HOME，所以不要加bin目录；
-            
-   
+
+ + spring cloud config 的 docker 部署 一些注意事项
+
+    1. springcloud config 在本地测试正常 但是部署docker容器后 无法正确访问到Git上的配置文件
+
+    2. docker容器与宿主机定义的hosts不是共享的
+
+    3. 解决方案使用 docker exec -it   [eureka容器id]  bash 进入eureka注册中心[config 配置中心]的docker容器中, 然后使用cat /etc/hosts命令查看容器的IP地
+        ```yml
+            spring:
+              cloud:
+                config:
+                  name: eureka        # 配置文件的前缀名
+                  profile: dev      # 配置文件的后缀名
+                  label: master     # Git 主分支
+                  uri: http://172.17.0.4:12000  # 修改eureka 的bootstrap.yml 文件中uri的宿主机ip地址 改成从config容器中查出的ip地址 
+        ```
+       ​     
+
    
 
   
