@@ -24,7 +24,7 @@
     </dependencies>
 
     <build>
-        <finalName>tensquare_eureka</finalName>  <!-- maven 打包上传后的文件名 -->
+        <finalName>app</finalName>  <!-- maven 打包上传后的文件名 -->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
