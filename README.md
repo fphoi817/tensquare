@@ -431,7 +431,7 @@
  
  + 安装jenkins
    1. 需要安装 docker.io/jenkins/jenkins 而docker.io/jenkins版本太旧无法下载插件
-   2. `docker run -d --name jenkins -p 8888:8080 -p 50000:50000 -v /home/jenkins:/var/jenkins_home --privileged docker.io/jenkins/jenkins`
+   2. docker run -d --name jenkins -p 8888:8080 -p 50000:50000 -v **/home/jenkins:/var/jenkins_home** --privileged docker.io/jenkins/jenkins
    3. 注意 挂载的路径对应 并且--privileged 授权
    4. jenkins 需要安装 插件 Maven Integration
    5. 配置全局 JDK 和 maven
@@ -440,6 +440,11 @@
       容器挂载的映射地址 maven 也一样 不能是 /home/jenkins/maven/apache-maven-3.6.1
       而应该是 /var/jenkins_home/maven/apache-maven-3.6.1
     
+    > 解释一下我这里为什么是/var/jenkins_home/
+      因为我首先jenkins是安装在docker里的，这时候使用的就是docker里的路径，
+      我们上面运行jenkins的时候，看我标红的地方；
+      这里我的jdk是复制了一份放在/home/jenkins/下面的，所以这里路径就可以直接这么写了；
+      注意：这里是JAVA_HOME，所以不要加bin目录；
             
    
    
