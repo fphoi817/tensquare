@@ -352,65 +352,110 @@
 
 ###### DockerMaven 插件
 
-+ 通过Maven插件自动部署
+ + 通过Maven插件自动部署
 
-  1. 修改宿主机的docker配置，让其可以远程访问
+    1. 修改宿主机的docker配置，让其可以远程访问
 
-     ```shell
-     vi /lib/systemd/system/docker.service
-     
-     其中 ExecStart=后添加配置 ‐H tcp://0.0.0.0:2375 ‐H unix:///var/run/docker.sock
-     
-     具体位置 插入到
-     --seccomp-profile ... \
-     ‐H tcp://0.0.0.0:2375 ‐H unix:///var/run/docker.sock \
-     $OPTIONS \
-     
-     systemctl daemon‐reload  	// 重新载入docker 守护线程
-     systemctl restart docker  	// 重启docker 服务
-     docker start registry		// 重启私有仓库服务
-     
-     注意其中 一定要开启防护墙 的端口 2375  不然无法访问
-     firewall-cmd --zone=public --add-port=80/tcp --permanent    （--permanent永久生效，没有此参数重启后失效）
-     firewall-cmd --reload
-     查看所有打开的端口： firewall-cmd --zone=public --list-ports
-     ```
+         ```shell
+         vi /lib/systemd/system/docker.service
+         
+         其中 ExecStart=后添加配置 ‐H tcp://0.0.0.0:2375 ‐H unix:///var/run/docker.sock
+         
+         具体位置 插入到
+         --seccomp-profile ... \
+         ‐H tcp://0.0.0.0:2375 ‐H unix:///var/run/docker.sock \
+         $OPTIONS \
+         
+         systemctl daemon‐reload  	// 重新载入docker 守护线程
+         systemctl restart docker  	// 重启docker 服务
+         docker start registry		// 重启私有仓库服务
+         
+         注意其中 一定要开启防护墙 的端口 2375  不然无法访问 教训啊
+         firewall-cmd --zone=public --add-port=80/tcp --permanent    （--permanent永久生效，没有此参数重启后失效）
+         firewall-cmd --reload
+         查看所有打开的端口： firewall-cmd --zone=public --list-ports
+         ```
 
-  2. 在工程pom.xml 增加配置
+    2. 在工程pom.xml 增加配置
 
-     ```xml
-     	<build>
-             <finalName>app</finalName>  <!-- maven 打包上传后的文件名 -->
-             <plugins>
-                 <plugin>
-                     <groupId>org.springframework.boot</groupId>
-                     <artifactId>spring-boot-maven-plugin</artifactId>
-                 </plugin>	<!-- springboot 整合 maven 插件 -->	
-                 <plugin>
-                     <groupId>com.spotify</groupId>
-                     <artifactId>docker-maven-plugin</artifactId>
-                     <version>0.4.13</version>
-     <!-- docker的maven插件 官网：https://github.com/spotify/docker-maven-plugin -->
-                     <configuration>               
-                         <imageName>{ip}:5000/${project.artifactId}:${project.version}</imageName>
-     <!-- 标记要上传的(docker tag)镜像名 ip地址:端口号/artifactId/version -->                    
-                         <baseImage>jdk1.8</baseImage>
-     <!-- 集成的基础镜像 springboot 打包的项目 需要依赖 JDK1.8运行环境 -->
-                         <entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
-     <!-- docker把镜像生成容器后 执行该命令 java -jar 项目文件名.jar -->                 
-                         <resources>
-                             <resource>
-                                 <targetPath>/</targetPath>
-                                 <directory>${project.build.directory}</directory>
-                                 <include>${project.build.finalName}.jar</include>
-                             </resource>
-                         </resources>
-                         <dockerHost>http//{ip}:2375</dockerHost>
-                         <!-- docker 连接地址 -->
-                     </configuration>
-                 </plugin>
-             </plugins>
-         </build>
-     ```
+         ```xml
+            <build>
+                 <finalName>app</finalName>  <!-- maven 打包上传后的文件名 -->
+                 <plugins>
+                     <plugin>
+                         <groupId>org.springframework.boot</groupId>
+                         <artifactId>spring-boot-maven-plugin</artifactId>
+                     </plugin>	<!-- springboot 整合 maven 插件 -->	
+                     <plugin>
+                         <groupId>com.spotify</groupId>
+                         <artifactId>docker-maven-plugin</artifactId>
+                         <version>0.4.13</version>
+         <!-- docker的maven插件 官网：https://github.com/spotify/docker-maven-plugin -->
+                         <configuration>               
+                             <imageName>{ip}:5000/${project.artifactId}:${project.version}</imageName>
+         <!-- 标记要上传的(docker tag)镜像名 ip地址:端口号/artifactId/version -->                    
+                             <baseImage>jdk1.8</baseImage>
+         <!-- 集成的基础镜像 springboot 打包的项目 需要依赖 JDK1.8运行环境 -->
+                             <entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+         <!-- docker把镜像生成容器后 执行该命令 java -jar 项目文件名.jar -->                 
+                             <resources>
+                                 <resource>
+                                     <targetPath>/</targetPath>
+                                     <directory>${project.build.directory}</directory>
+                                     <include>${project.build.finalName}.jar</include>
+                                 </resource>
+                             </resources>
+                             <dockerHost>http//{ip}:2375</dockerHost>
+                             <!-- docker 连接地址 -->
+                         </configuration>
+                     </plugin>
+                 </plugins>
+             </build>
+         ```
+    
+###### Jenkins 集成插件
 
-     
+ + 安装之前的 配置
+
+   1. `mkdir /home/jenkins`	       创建jenkins 挂载的文件夹
+   2. `mkdir /home/jenkins/java`   创建一个存放 jdk 的文件夹
+   3. `mkdir /home/jenkins/maven`  创建一个存放 maven 的文件夹
+   4. 将JDK 和 maven 上传到对应文件夹下 解压 tar -zxvf xxxx.tar.gz
+   5. vim /home/jenkins/maven/apache-maven-3.6.1/conf/settings.xml
+   6. 添加 <localRepository>**/var/jenkins_home/RepMaven**</localRepository> 
+    > 注意:  这里的粗体字, 因为maven所在的文件夹是在容器jenkins 容器挂载在宿主机上的文件, 
+      所以需要写上jenkins能识别的路径, 如果写成宿主机的路径 /home/jenkins/RepMaven 
+      会无法找到文件 ,maven是在jenkins中运行的, 所有的依赖将会下载到jenkins 容器对应路径的
+      文件下 /var/jenkins_home/RepMaven        教训啊
+   7. 需要给容器jenkins挂载的文件授权chown -R 1000:1000 jenkins/ 给UID为1000的权限 不然容器无法启动
+ 
+ + 安装jenkins
+   1. 需要安装 docker.io/jenkins/jenkins 而docker.io/jenkins版本太旧无法下载插件
+   2. `docker run -d --name jenkins -p 8888:8080 -p 50000:50000 -v /home/jenkins:/var/jenkins_home --privileged docker.io/jenkins/jenkins`
+   3. 注意 挂载的路径对应 并且--privileged 授权
+   4. jenkins 需要安装 插件 Maven Integration
+   5. 配置全局 JDK 和 maven
+    > 注意这里的路径 和上面的引用说明一样 不能直接写宿主机挂载的路径 /home/jenkins/java/jdk1.8.0_201 
+      而应该是 /var/jenkins_home/java/jdk1.8.0_201 因为JDK 是在jenkins中运行的 配置的路径也应该是
+      容器挂载的映射地址 maven 也一样 不能是 /home/jenkins/maven/apache-maven-3.6.1
+      而应该是 /var/jenkins_home/maven/apache-maven-3.6.1
+    
+            
+   
+   
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  

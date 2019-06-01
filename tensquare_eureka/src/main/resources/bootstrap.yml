@@ -4,4 +4,4 @@ spring:
       name: eureka        # 配置文件的前缀名
       profile: dev      # 配置文件的后缀名
       label: master     # Git 主分支
-      uri: http://192.168.253.129:12000
+      uri: http://192.168.179.132:12000
